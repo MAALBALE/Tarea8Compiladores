@@ -1,0 +1,33 @@
+
+import java.util.HashMap;
+
+public class TablaSimbolos {
+    private final HashMap<String, Integer> simbolos;
+
+    public TablaSimbolos() {
+        this.simbolos = new HashMap<>();
+    }
+
+    public void agregarSimbolo(String simbolo, int valor) {
+        simbolos.put(simbolo, valor);
+    }
+
+    public int getValorSimbolo(String simbolo) {
+        return simbolos.get(simbolo);
+    }
+
+    public boolean contieneSimbolo(String simbolo) {
+        return simbolos.containsKey(simbolo);
+    }
+
+    @Override
+    public String toString() {
+        return "TablaSimbolos{" +
+                "simbolos=" + simbolos +
+                '}';
+    }
+
+    void agregarSimbolo(String tipo, String aint) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+}
