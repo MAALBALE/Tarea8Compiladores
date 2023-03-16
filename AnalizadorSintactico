@@ -1,0 +1,59 @@
+import java.util.ArrayList;
+
+
+
+public class AnalizadorSintactico {
+    private final ArrayList<Token> tokens;
+    private final TablaSimbolos tablaSimbolos;
+    private final ArrayList<String> errores;
+
+    public AnalizadorSintactico(ArrayList<Token> tokens, TablaSimbolos tablaSimbolos) {
+        this.tokens = tokens;
+        this.tablaSimbolos = tablaSimbolos;
+        this.errores = new ArrayList<String>();
+    }
+
+    public void analizar() {
+    
+
+        int i = 0;
+        while (i < tokens.size()) {
+            Token token = tokens.get(i);
+            if (token.getTipo().equals("int") && (token.getTipo() == null ? Token.PALABRA_RESERVADA == null : token.getTipo().equals(Token.PALABRA_RESERVADA))) {
+                i++;
+                if (i < tokens.size()) {
+                    token = tokens.get(i);
+                    if (token.getTipo() == null ? Token.IDENTIFICADOR == null : token.getTipo().equals(Token.IDENTIFICADOR)) {
+                        tablaSimbolos.agregarSimbolo(token.getTipo(), "int");
+                        i++;
+                        if (i < tokens.size()) {
+                            token = tokens.get(i);
+                            if ((token.getTipo() == null ? Token.SIMBOLO == null : token.getTipo().equals(Token.SIMBOLO)) && token.getTipo().equals(";")) {
+                                i++;
+                            } else {
+                                errores.add("Error sintáctico: se esperaba ';'");
+                                break;
+                            }
+                        } else {
+                            errores.add("Error sintáctico: se esperaba ';'");
+                            break;
+                        }
+                    } else {
+                        errores.add("Error sintáctico: se esperaba un identificador");
+                        break;
+                    }
+                } else {
+                    errores.add("Error sintáctico: se esperaba un identificador");
+                    break;
+                }
+            } else {
+                errores.add("Error sintáctico: se esperaba 'int'");
+                break;
+            }
+        }
+    }
+
+    public ArrayList<String> getErrores() {
+        return errores;
+    }
+}
