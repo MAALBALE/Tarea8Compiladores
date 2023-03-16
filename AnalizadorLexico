@@ -19,13 +19,13 @@ public class AnalizadorLexico {
         while (posicionActual < codigoFuente.length) {
             char caracterActual = codigoFuente[posicionActual];
             
-            // Si se encuentra un espacio en blanco, simplemente avanza la posición actual.
+            
             if (Character.isWhitespace(caracterActual)) {
                 posicionActual++;
                 continue;
             }
             
-            // Si se encuentra un dígito, se analiza como un número.
+            
             if (Character.isDigit(caracterActual)) {
                 analizarNumero();
                 continue;
@@ -37,19 +37,19 @@ public class AnalizadorLexico {
                 continue;
             }
             
-            // Si se encuentra un signo de igual, se analiza como una asignación o comparación.
+            
             if (caracterActual == '=') {
                 analizarIgual();
                 continue;
             }
             
-            // Si se encuentra un signo de más o menos, se analiza como una operación matemática.
+           
             if (caracterActual == '+' || caracterActual == '-') {
                 analizarOperacionMatematica();
                 continue;
             }
             
-            // Si no se reconoce el caracter, se genera un token de error.
+           
             generarTokenError();
             posicionActual++;
         }
