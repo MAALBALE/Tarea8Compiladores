@@ -1,0 +1,99 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class AnalizadorLexico {
+    
+    private final char[] codigoFuente;
+    private int posicionActual;
+    private final TablaSimbolos tablaSimbolos;
+    private final List<Token> tokensGenerados;
+    
+    public AnalizadorLexico(String codigoFuente) {
+        this.codigoFuente = codigoFuente.toCharArray();
+        this.posicionActual = 0;
+        this.tablaSimbolos = new TablaSimbolos();
+        this.tokensGenerados = new ArrayList<>();
+    }
+    
+    public List<Token> analizar() {
+        while (posicionActual < codigoFuente.length) {
+            char caracterActual = codigoFuente[posicionActual];
+            
+            // Si se encuentra un espacio en blanco, simplemente avanza la posición actual.
+            if (Character.isWhitespace(caracterActual)) {
+                posicionActual++;
+                continue;
+            }
+            
+            // Si se encuentra un dígito, se analiza como un número.
+            if (Character.isDigit(caracterActual)) {
+                analizarNumero();
+                continue;
+            }
+            
+            // Si se encuentra una letra, se analiza como una palabra clave o identificador.
+            if (Character.isLetter(caracterActual)) {
+                analizarPalabra();
+                continue;
+            }
+            
+            // Si se encuentra un signo de igual, se analiza como una asignación o comparación.
+            if (caracterActual == '=') {
+                analizarIgual();
+                continue;
+            }
+            
+            // Si se encuentra un signo de más o menos, se analiza como una operación matemática.
+            if (caracterActual == '+' || caracterActual == '-') {
+                analizarOperacionMatematica();
+                continue;
+            }
+            
+            // Si no se reconoce el caracter, se genera un token de error.
+            generarTokenError();
+            posicionActual++;
+        }
+        
+        return tokensGenerados;
+    }
+    
+    private void analizarNumero() {
+        int inicio = posicionActual;
+        while (posicionActual < codigoFuente.length && Character.isDigit(codigoFuente[posicionActual])) {
+            posicionActual++;
+        }
+        String valor = new String(codigoFuente, inicio, posicionActual - inicio);
+        tokensGenerados.add(new Token(Token.tipo.NUMERO, valor));
+    }
+    
+    private void analizarPalabra() {
+        int inicio = posicionActual;
+        while (posicionActual < codigoFuente.length && Character.isLetterOrDigit(codigoFuente[posicionActual])) {
+            posicionActual++;
+        }
+        String valor = new String(codigoFuente, inicio, posicionActual - inicio);
+        Token.lexema tipo = tablaSimbolos.obtenerTipoToken(valor);
+        tokensGenerados.add(new Token(tipo, valor));
+    }
+    
+    private void analizarIgual() {
+        if (posicionActual < codigoFuente.length - 1 && codigoFuente[posicionActual + 1] == '=') {
+            tokensGenerados.add(new Token(Token.tipo.COMPARACION, "=="));
+            posicionActual += 2;
+        } else {
+            tokensGenerados.add(new Token(Token.tipo.ASIGNACION, "="));
+            posicionActual++;
+        }
+    }
+    
+    private void analizarOperacionMatematica() {
+        Token.Tipo tipo = codigoFuente[posicionActual] == '+' ? Token.Tipo.SUMA : Token.Tipo.RESTA;
+        tokensGenerados.add(new Token(tipo));
+        posicionActual++;
+    }
+    
+      private void generarTokenError() {
+        tokensGenerados.add(new Token(Token.tipo.ERROR));
+        posicionActual++;
+    }
+}
